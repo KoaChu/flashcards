@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
 
 import HomeScreen from '../screens/HomeScreen';
+import DeckScreen from '../screens/DeckScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -19,6 +20,7 @@ export const RootNavigator = () => {
                 initialRouteName={'Home'}
             >
                 <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Decks" component={DeckScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     )

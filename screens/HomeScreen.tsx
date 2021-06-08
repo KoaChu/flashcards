@@ -1,11 +1,14 @@
-import React, { FC, ReactElement, useEffect, useState } from 'react'
-import { View, Text, ViewStyle, StyleSheet, FlatList, ListRenderItem, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import React, { AnimationEventHandler, FC, ReactElement, useEffect, useRef, useState } from 'react'
+import { View, Text, ViewStyle, StyleSheet, FlatList, ListRenderItem, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, Animated, Easing } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { useCardsContext } from '../contexts/CardsProvider';
-
 import { STYLING, COLORS } from '../constants/constants';
 import { Card } from '../types/types';
+import DeckButton from '../components/DeckButton';
 
 const CARD_HEIGHT = STYLING.height * 0.5 + (STYLING.height - (STYLING.height * 0.5));
 
@@ -13,6 +16,8 @@ interface Styles {
     container: ViewStyle;
     card: ViewStyle;
     editBtn: ViewStyle;
+    gradient: ViewStyle;
+    deckBtn: ViewStyle;
 }
 
 interface ListProps {
@@ -56,12 +61,42 @@ const styles = StyleSheet.create<Styles>({
         borderRadius: 10,
         position: 'absolute',
         bottom: STYLING.spacing * 2.5,
+    },
+    gradient: {
+        height: STYLING.height,
+        width: STYLING.width,
+        position: 'absolute',
+        zIndex: 0,
+    },
+    deckBtn: {
+        position: 'absolute',
+        zIndex: 999,
+        bottom: STYLING.spacing * 5,
+        left: STYLING.spacing * 5,
     }
 });
 
 const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
     // console.log("DATA -> " + data);
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
     const [answer, setAnswer] = useState(false);
+
+    // const animation = (toValue: number) => Animated.timing(animatedValue, {
+    //     toValue,
+    //     duration: 1000,
+    //     useNativeDriver: false,
+    // });
+
+    const flipCard = (toValue: number) => {
+        Animated.timing(animatedValue, {
+            toValue,
+            duration: 1000,
+            easing: Easing.elastic(0.5),
+            useNativeDriver: false,
+        }).start();
+        setAnswer(!answer);
+    }
 
     return (
         <FlatList
@@ -69,6 +104,11 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
             snapToAlignment={"start"}
             snapToInterval={CARD_HEIGHT}
             decelerationRate={0}
+            onMomentumScrollBegin={() => {
+                if (answer) {
+                    flipCard(0);
+                }
+            }}
             contentContainerStyle={{
                 width: STYLING.width,
                 alignItems: 'center',
@@ -76,13 +116,67 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
             }}
             keyExtractor={item => item.key}
             renderItem={({ item, index }: { item: Card, index: number } ) => {
+                const rotateY = animatedValue.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['0deg', '180deg']
+                });
+
+                const opacity = animatedValue.interpolate({
+                    inputRange: [0, 0.001, 0.5, 0.999, 1],
+                    outputRange: [1, 0, 0, 0, 1],
+                });
+
                 return (
-                    <TouchableWithoutFeedback onPress={() => { setAnswer(!answer) }}>
-                        <View 
-                            style={styles.card}
+                    <TouchableWithoutFeedback onPress={() => { flipCard(answer ? 0 : 1) }}>
+                        <Animated.View 
+                            style={{
+                                ...styles.card,
+                                transform: [
+                                    {rotateY: rotateY}
+                                ]
+                            }}
                         >
-                            <Text>{answer ? item.answer : item.question}</Text>
-                        </View>
+                            <Animated.Text
+                                style={{
+                                    position: 'absolute',
+                                    top: STYLING.spacing * 3,
+                                    right: STYLING.spacing * 3,
+                                    transform: [
+                                        {rotateY: rotateY}
+                                    ],
+                                    opacity: opacity,
+                                }}
+                            >
+                                {answer ? <FontAwesome5 name="check-circle" size={24} color="green" /> : <FontAwesome5 name="question-circle" size={24} color="red" />}
+                            </Animated.Text>
+                            <View
+                                style={{
+                                    width: STYLING.width * 0.8,
+                                    height: STYLING.height * 0.4,
+                                    transform: [
+                                        {translateY: STYLING.spacing * 2}
+                                    ],
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    padding: STYLING.spacing,
+                                    // backgroundColor: 'red',
+                                }}
+                            >
+                                <Animated.Text 
+                                    style={{
+                                        transform: [
+                                            {rotateY: rotateY}
+                                        ],
+                                        opacity: opacity,
+                                        fontFamily: 'Rubik',
+                                        fontSize: responsiveFontSize(2.5),
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    {answer ? item.answer : item.question}
+                                </Animated.Text>
+                            </View>
+                        </Animated.View>
                     </TouchableWithoutFeedback>
                 );
             }}
@@ -96,7 +190,14 @@ const HomeScreen: FC = ({}): ReactElement => {
     return (
         <View style={styles.container}>
             <StatusBar style="dark" />
+            <LinearGradient
+                colors={[COLORS.db, COLORS.lb]}
+                style={styles.gradient}
+            />
             <CardList data={cardList}/>
+            <View style={styles.deckBtn}>
+                <DeckButton />
+            </View>
         </View>
     )
 }

@@ -3,12 +3,14 @@ const { width, height } = Dimensions.get('window');
 
 interface C {
     lb: string;
+    db: string;
     white: string;
     black: string;
 }
 
 export const COLORS: C = {
     lb: "#AED6F1",
+    db: '#2874A6',
     white: '#F0F3F4',
     black: '#17202A'
 }
