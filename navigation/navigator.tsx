@@ -15,7 +15,8 @@ export const RootNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator 
                 screenOptions={{
-                    headerShown: false
+                    headerShown: false,
+                    gestureEnabled: false,
                 }} 
                 initialRouteName={'Home'}
             >

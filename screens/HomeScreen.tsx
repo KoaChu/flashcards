@@ -104,6 +104,7 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
             snapToAlignment={"start"}
             snapToInterval={CARD_HEIGHT}
             decelerationRate={0}
+            showsVerticalScrollIndicator={false}
             onMomentumScrollBegin={() => {
                 if (answer) {
                     flipCard(0);

@@ -1,10 +1,17 @@
 import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native';
 
 import { STYLING, COLORS } from '../constants/constants';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function DeckButton({}) {
+const DeckButton = () => {
+    const navigation = useNavigation();
+
+    const goToDecks = () => {
+        navigation.navigate('Decks');
+    };
+
     return (
         <View 
             style={{
@@ -15,12 +22,14 @@ export default function DeckButton({}) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderColor: COLORS.white,
-                borderWidth: 2,
+                borderWidth: 1,
             }}
         >
-            <TouchableOpacity onPress={() => console.log('nav placeholder') }>
+            <TouchableOpacity onPress={goToDecks}>
                 <MaterialCommunityIcons name="cards-outline" size={28} color="white" />
             </TouchableOpacity>
         </View>
     )
 }
+
+export default DeckButton;
