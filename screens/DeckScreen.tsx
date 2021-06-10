@@ -6,6 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import  { RootStackParamList } from '../types/types';
 import { STYLING, COLORS } from '../constants/constants';
+import DeckList from '../components/DeckList';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -24,12 +25,17 @@ const DeckScreen: FC<Props> = ({ navigation }) => {
 
     const styles = StyleSheet.create({
         backBtn: {
-            borderRadius: STYLING.width / 2,
+            width: STYLING.width * 0.12,
+            height: STYLING.width * 0.12,
+            borderRadius: (STYLING.width * 0.12) / 2,
             position: 'absolute',
-            top: STYLING.spacing * 10,
-            left: STYLING.spacing * 4,
+            zIndex: 999,
+            top: STYLING.spacing * 8,
+            left: STYLING.spacing * 2.25,
             justifyContent: 'center',
             alignItems: 'center',
+            borderWidth: 1,
+            borderColor: COLORS.white,
         }
     });
 
@@ -39,13 +45,15 @@ const DeckScreen: FC<Props> = ({ navigation }) => {
                 flex: 1,
                 backgroundColor: COLORS.db,
                 alignItems: 'center',
+                justifyContent: 'center',
             }}
         >
             <View style={styles.backBtn}>
                 <TouchableOpacity onPress={goToHome}>
-                    <Ionicons name="arrow-back-circle-outline" size={48} color={COLORS.white} />
+                    <Ionicons name="arrow-back" size={42} color={COLORS.white} />
                 </TouchableOpacity>
             </View>
+            <DeckList />
         </View>
     )
 }
