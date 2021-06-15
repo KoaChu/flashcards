@@ -164,6 +164,7 @@ const CardsProvider: FC = ({ children }) => {
   
   const db = openDatabase();
 
+  
 
   const getInfo = async () => {
     const info = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}SQLite/db.db`);
