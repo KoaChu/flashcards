@@ -9,7 +9,6 @@ import { Platform } from "react-native";
 import * as SQLite from "expo-sqlite";
 import * as FileSystem from 'expo-file-system';
 
-
 import { CardsContextState, Card, Deck } from "../types/types";
 
 const contextDefaultValues: CardsContextState = {
