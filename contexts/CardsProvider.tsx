@@ -6,7 +6,6 @@ import React, {
   FC,
 } from "react";
 import { Platform } from "react-native";
-import * as SQLite from "expo-sqlite";
 import * as FileSystem from 'expo-file-system';
 
 import { CardsContextState, Card, Deck } from "../types/types";
@@ -145,43 +144,11 @@ const CardsProvider: FC = ({ children }) => {
   const [deckList, setDeckList] = useState<Deck[]>(
     contextDefaultValues.deckList
   );
-
-  const openDatabase = () => {
-    if (Platform.OS === "web") {
-      return {
-        transaction: () => {
-          return {
-            executeSql: () => {},
-          };
-        },
-      };
-    }
-  
-    const db = SQLite.openDatabase("db.db");
-    console.log(db);
-    return db;
-  }
-  
-  const db = openDatabase();
-
   
 
   const getInfo = async () => {
-    const info = await FileSystem.getInfoAsync(`${FileSystem.documentDirectory}SQLite/db.db`);
     // console.log(`${FileSystem.documentDirectory}SQLite/db.db`);
   }
-  // useEffect(() => {
-  //   getInfo();
-
-  //   db.transaction((tx) => {
-  //     tx.executeSql(
-  //       `SELECT * FROM decks`,
-  //       undefined,
-  //       (_, { rows: { _array } }) => setDeckList(_array),
-  //       (_, err) => console.log('ERROR: ', err)
-  //     );
-  //   });
-  // }, []);
 
   const addCard = (card: Card) => {
     setCardList((cardList) => [...cardList, card]);
