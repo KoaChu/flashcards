@@ -22,4 +22,5 @@ export type CardsContextState = {
 export type RootStackParamList = {
     Home: undefined;
     Decks: undefined;
+    NewDeck: undefined;
 };
