@@ -10,7 +10,7 @@ import { STYLING, COLORS } from '../constants/constants';
 import { Card } from '../types/types';
 import DeckButton from '../components/DeckButton';
 
-const CARD_HEIGHT = STYLING.height * 0.5 + (STYLING.height - (STYLING.height * 0.5));
+const CARD_HEIGHT = STYLING.height * 0.6 + (STYLING.height - (STYLING.height * 0.6));
 
 interface Styles {
     container: ViewStyle;
@@ -33,10 +33,10 @@ const styles = StyleSheet.create<Styles>({
     },
     card: {
         width: STYLING.width * 0.85,
-        height: STYLING.height * 0.5,
+        height: STYLING.height * 0.6,
         backgroundColor: COLORS.white,
-        marginTop: (STYLING.height - (STYLING.height * 0.5)) / 2,
-        marginBottom: (STYLING.height - (STYLING.height * 0.5)) / 2,
+        marginTop: (STYLING.height - (STYLING.height * 0.6)) / 2,
+        marginBottom: (STYLING.height - (STYLING.height * 0.6)) / 2,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create<Styles>({
         shadowOpacity: 0.58,
         shadowRadius: 16.00,
 
-        elevation: 24,
+        // elevation: 24,
     },
     editBtn: {
         width: STYLING.width * 0.4,
@@ -79,7 +79,6 @@ const styles = StyleSheet.create<Styles>({
 });
 
 const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
-    // console.log("DATA -> " + data);
     const animatedValue = useRef(new Animated.Value(0)).current;
 
     const [answer, setAnswer] = useState(false);
@@ -129,6 +128,11 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
                     outputRange: [1, 0, 0, 0, 1],
                 });
 
+                const elevation = animatedValue.interpolate({
+                    inputRange: [0, 0.001, 0.999, 1],
+                    outputRange: [24, 0, 0, 24]
+                })
+
                 return (
                     <TouchableWithoutFeedback onPress={() => { flipCard(answer ? 0 : 1) }}>
                         <Animated.View 
@@ -136,7 +140,8 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
                                 ...styles.card,
                                 transform: [
                                     {rotateY: rotateY}
-                                ]
+                                ],
+                                elevation: elevation
                             }}
                         >
                             <Animated.Text
@@ -192,7 +197,7 @@ const HomeScreen: FC = ({}): ReactElement => {
 
     return (
         <View style={styles.container}>
-            <StatusBar style="dark" />
+            <StatusBar style="light" />
             <LinearGradient
                 colors={[COLORS.db, COLORS.lb]}
                 style={styles.gradient}

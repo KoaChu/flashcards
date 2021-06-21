@@ -1,5 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, FlatList, StyleSheet, Animated } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
+import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import { useCardsContext } from "../contexts/CardsProvider";
 import { STYLING, COLORS } from "../constants/constants";
@@ -33,6 +42,39 @@ export default function DeckList() {
 
       elevation: 24,
     },
+    text: {
+      fontFamily: "Rubik",
+      fontSize: responsiveFontSize(2.5),
+      textAlign: "center",
+    },
+    trashBtn: {
+      width: STYLING.width * 0.09,
+      height: STYLING.width * 0.09,
+      borderRadius: (STYLING.width * 0.09) / 2,
+      position: "absolute",
+      zIndex: 999,
+      top: STYLING.spacing * 2,
+      right: STYLING.spacing * 2.25,
+      justifyContent: "center",
+      alignItems: "center",
+      borderWidth: 2,
+      borderColor: 'maroon',
+      backgroundColor: 'transparent',
+    },
+    editBtn: {
+      width: STYLING.width * 0.09,
+      height: STYLING.width * 0.09,
+      borderRadius: (STYLING.width * 0.09) / 2,
+      position: "absolute",
+      zIndex: 999,
+      top: (STYLING.spacing * 3) + (STYLING.width * 0.09),
+      right: STYLING.spacing * 2.25,
+      justifyContent: "center",
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: COLORS.black,
+      backgroundColor: COLORS.db,
+    },
   });
 
   return (
@@ -40,7 +82,7 @@ export default function DeckList() {
       style={{
         width: STYLING.width,
         height: STYLING.height,
-        backgroundColor: COLORS.db,
+        backgroundColor: COLORS.black,
         // justifyContent: "center",
         // alignItems: "center",
       }}
@@ -60,8 +102,8 @@ export default function DeckList() {
           alignItems: "center",
         }}
         onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-            { useNativeDriver: false }
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: false }
         )}
         renderItem={({ item, index }) => {
           if (item.key === "left-spacer" || item.key === "right-spacer") {
@@ -74,11 +116,15 @@ export default function DeckList() {
             );
           }
 
-          const inputRange = [(index - 2) * ITEM_SIZE, (index - 1) * ITEM_SIZE, (index) * ITEM_SIZE];
+          const inputRange = [
+            (index - 2) * ITEM_SIZE,
+            (index - 1) * ITEM_SIZE,
+            index * ITEM_SIZE,
+          ];
 
           const opacity = scrollX.interpolate({
             inputRange,
-            outputRange: [ 0.4, 1, 0.4]
+            outputRange: [0.4, 1, 0.4],
           });
 
           const translateY = scrollX.interpolate({
@@ -91,12 +137,20 @@ export default function DeckList() {
               style={{
                 ...styles.card,
                 opacity: opacity,
-                transform: [
-                    { translateY: translateY }
-                ]
+                transform: [{ translateY: translateY }],
               }}
             >
-              <Text>{item.title}</Text>
+              <View style={styles.trashBtn}>
+                <TouchableOpacity onPress={() => console.log("placeholder")}>
+                  <Ionicons name="md-trash-sharp" size={22} color={"maroon"} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.editBtn}>
+                <TouchableOpacity onPress={() => console.log("placeholder")}>
+                  <MaterialIcons name="mode-edit" size={24} color={COLORS.white} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.text}>{item.title}</Text>
             </Animated.View>
           );
         }}
