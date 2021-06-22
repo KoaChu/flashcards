@@ -6,7 +6,9 @@ import React, {
   FC,
 } from "react";
 import { Platform } from "react-native";
-import * as FileSystem from 'expo-file-system';
+import Realm, { ObjectSchema } from "realm";
+const { UUID } = Realm.BSON;
+let realm: any;
 
 import { CardsContextState, Card, Deck } from "../types/types";
 
@@ -28,10 +30,10 @@ const contextDefaultValues: CardsContextState = {
   ],
   deckList: [
     {
-        title: 'left-spacer',
-        description: 'spacer',
-        cards: [],
-        key: 'left-spacer'
+      title: "left-spacer",
+      description: "spacer",
+      cards: [],
+      key: "left-spacer",
     },
     {
       title: "Deck 1",
@@ -51,78 +53,78 @@ const contextDefaultValues: CardsContextState = {
       ],
     },
     {
-        title: "Deck 2",
-        description: "Second deck!",
-        key: "2",
-        cards: [
-          { question: "Q2", answer: "2", key: "2" },
-          { question: "3", answer: "3", key: "3" },
-          { question: "4", answer: "4", key: "4" },
-          { question: "5", answer: "5", key: "5" },
-          { question: "6", answer: "6", key: "6" },
-          { question: "1", answer: "1", key: "7" },
-          { question: "2", answer: "2", key: "8" },
-          { question: "3", answer: "3", key: "9" },
-          { question: "4", answer: "4", key: "10" },
-          { question: "5", answer: "5", key: "11" },
-        ],
-      },
-      {
-        title: "Deck 3",
-        description: "Third deck!",
-        key: "3",
-        cards: [
-          { question: "Q2", answer: "2", key: "2" },
-          { question: "3", answer: "3", key: "3" },
-          { question: "4", answer: "4", key: "4" },
-          { question: "5", answer: "5", key: "5" },
-          { question: "6", answer: "6", key: "6" },
-          { question: "1", answer: "1", key: "7" },
-          { question: "2", answer: "2", key: "8" },
-          { question: "3", answer: "3", key: "9" },
-          { question: "4", answer: "4", key: "10" },
-          { question: "5", answer: "5", key: "11" },
-        ],
-      },
-      {
-        title: "Deck 4",
-        description: "Fourth deck!",
-        key: "4",
-        cards: [
-          { question: "Q2", answer: "2", key: "2" },
-          { question: "3", answer: "3", key: "3" },
-          { question: "4", answer: "4", key: "4" },
-          { question: "5", answer: "5", key: "5" },
-          { question: "6", answer: "6", key: "6" },
-          { question: "1", answer: "1", key: "7" },
-          { question: "2", answer: "2", key: "8" },
-          { question: "3", answer: "3", key: "9" },
-          { question: "4", answer: "4", key: "10" },
-          { question: "5", answer: "5", key: "11" },
-        ],
-      },
-      {
-        title: "Deck 5",
-        description: "Fifth deck!",
-        key: "5",
-        cards: [
-          { question: "Q2", answer: "2", key: "2" },
-          { question: "3", answer: "3", key: "3" },
-          { question: "4", answer: "4", key: "4" },
-          { question: "5", answer: "5", key: "5" },
-          { question: "6", answer: "6", key: "6" },
-          { question: "1", answer: "1", key: "7" },
-          { question: "2", answer: "2", key: "8" },
-          { question: "3", answer: "3", key: "9" },
-          { question: "4", answer: "4", key: "10" },
-          { question: "5", answer: "5", key: "11" },
-        ],
-      },
-      {
-        title: 'spacer',
-        description: 'spacer',
-        cards: [],
-        key: 'right-spacer'
+      title: "Deck 2",
+      description: "Second deck!",
+      key: "2",
+      cards: [
+        { question: "Q2", answer: "2", key: "2" },
+        { question: "3", answer: "3", key: "3" },
+        { question: "4", answer: "4", key: "4" },
+        { question: "5", answer: "5", key: "5" },
+        { question: "6", answer: "6", key: "6" },
+        { question: "1", answer: "1", key: "7" },
+        { question: "2", answer: "2", key: "8" },
+        { question: "3", answer: "3", key: "9" },
+        { question: "4", answer: "4", key: "10" },
+        { question: "5", answer: "5", key: "11" },
+      ],
+    },
+    {
+      title: "Deck 3",
+      description: "Third deck!",
+      key: "3",
+      cards: [
+        { question: "Q2", answer: "2", key: "2" },
+        { question: "3", answer: "3", key: "3" },
+        { question: "4", answer: "4", key: "4" },
+        { question: "5", answer: "5", key: "5" },
+        { question: "6", answer: "6", key: "6" },
+        { question: "1", answer: "1", key: "7" },
+        { question: "2", answer: "2", key: "8" },
+        { question: "3", answer: "3", key: "9" },
+        { question: "4", answer: "4", key: "10" },
+        { question: "5", answer: "5", key: "11" },
+      ],
+    },
+    {
+      title: "Deck 4",
+      description: "Fourth deck!",
+      key: "4",
+      cards: [
+        { question: "Q2", answer: "2", key: "2" },
+        { question: "3", answer: "3", key: "3" },
+        { question: "4", answer: "4", key: "4" },
+        { question: "5", answer: "5", key: "5" },
+        { question: "6", answer: "6", key: "6" },
+        { question: "1", answer: "1", key: "7" },
+        { question: "2", answer: "2", key: "8" },
+        { question: "3", answer: "3", key: "9" },
+        { question: "4", answer: "4", key: "10" },
+        { question: "5", answer: "5", key: "11" },
+      ],
+    },
+    {
+      title: "Deck 5",
+      description: "Fifth deck!",
+      key: "5",
+      cards: [
+        { question: "Q2", answer: "2", key: "2" },
+        { question: "3", answer: "3", key: "3" },
+        { question: "4", answer: "4", key: "4" },
+        { question: "5", answer: "5", key: "5" },
+        { question: "6", answer: "6", key: "6" },
+        { question: "1", answer: "1", key: "7" },
+        { question: "2", answer: "2", key: "8" },
+        { question: "3", answer: "3", key: "9" },
+        { question: "4", answer: "4", key: "10" },
+        { question: "5", answer: "5", key: "11" },
+      ],
+    },
+    {
+      title: "spacer",
+      description: "spacer",
+      cards: [],
+      key: "right-spacer",
     },
   ],
   addCard: () => {},
@@ -134,6 +136,53 @@ export const CardsContext =
 
 export const useCardsContext = () => useContext(CardsContext);
 
+const CardSchema: ObjectSchema = {
+  name: "CardSchema",
+  primaryKey: "_id",
+  properties: {
+    _id: "uuid",
+    question: "string",
+    answer: "string",
+  },
+};
+
+const DeckSchema: ObjectSchema = {
+  name: "DeckSchema",
+  primaryKey: "_id",
+  properties: {
+    _id: "uuid",
+    title: "string",
+    description: "string",
+    cards: "CardSchema[]",
+  },
+};
+
+// class CardSchema {
+//   static schema = {
+//     name: "Card",
+//     primaryKey: "_id",
+//     properties: {
+//       _id: "uuid",
+//       question: "string",
+//       answer: "string",
+//     },
+//   };
+// }
+
+// class DeckSchema {
+//   static schema = {
+//     name: "Deck",
+//     primaryKey: "_id",
+//     properties: {
+//       _id: "uuid",
+//       title: "string",
+//       description: "string",
+//       cards: "CardSchema[]",
+//     },
+//   };
+// }
+
+
 const CardsProvider: FC = ({ children }) => {
   const [listName, setListName] = useState<string>(
     contextDefaultValues.listName
@@ -144,11 +193,31 @@ const CardsProvider: FC = ({ children }) => {
   const [deckList, setDeckList] = useState<Deck[]>(
     contextDefaultValues.deckList
   );
-  
+
+  const openDB = async () => {
+    try {
+      realm = Realm.open({
+        path: "deckdb",
+        schema: [DeckSchema, CardSchema],
+      }).then(() => {
+        console.log(realm.path);
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    openDB();
+
+    return () => {
+      Realm;
+    };
+  }, []);
 
   const getInfo = async () => {
     // console.log(`${FileSystem.documentDirectory}SQLite/db.db`);
-  }
+  };
 
   const addCard = (card: Card) => {
     setCardList((cardList) => [...cardList, card]);

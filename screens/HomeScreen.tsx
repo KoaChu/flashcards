@@ -27,7 +27,7 @@ interface ListProps {
 const styles = StyleSheet.create<Styles>({
     container: {
         flex: 1,
-        backgroundColor: COLORS.lb,
+        backgroundColor: COLORS.db,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -199,7 +199,7 @@ const HomeScreen: FC = ({}): ReactElement => {
         <View style={styles.container}>
             <StatusBar style="light" />
             <LinearGradient
-                colors={[COLORS.db, COLORS.lb]}
+                colors={[COLORS.db, COLORS.black]}
                 style={styles.gradient}
             />
             <CardList data={cardList}/>
