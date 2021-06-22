@@ -22,6 +22,10 @@ const DeckScreen: FC<Props> = ({ navigation }) => {
     navigation.push("Home");
   };
 
+  const goToNewDeck = () => {
+      navigation.push("NewDeck");
+  }
+
   const styles = StyleSheet.create({
     backBtn: {
       width: STYLING.width * 0.12,
@@ -66,7 +70,7 @@ const DeckScreen: FC<Props> = ({ navigation }) => {
         </View>
       </TouchableOpacity>
       <DeckList />
-      <TouchableOpacity style={styles.newDeckBtn} onPress={goToHome}>
+      <TouchableOpacity style={styles.newDeckBtn} onPress={goToNewDeck}>
         <View>
           <FontAwesome5 name="plus" size={24} color={COLORS.white} />
         </View>
