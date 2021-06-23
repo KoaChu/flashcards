@@ -17,6 +17,7 @@ export type CardsContextState = {
     deckList: Deck[];
     addCard: (card: Card) => void;
     removeCard: (card: Card) => void;
+    listDecks: () => void;
 };
 
 export type RootStackParamList = {

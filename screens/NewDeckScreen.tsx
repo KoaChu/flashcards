@@ -14,6 +14,7 @@ import Header from "../components/Header";
 import { RootStackParamList } from "../types/types";
 import { STYLING, COLORS } from "../constants/constants";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+import { useCardsContext } from "../contexts/CardsProvider";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     marginBottom: STYLING.spacing,
-      padding: STYLING.spacing
+    padding: STYLING.spacing,
   },
   title: {
     fontFamily: "Rubik",
@@ -105,6 +106,9 @@ const styles = StyleSheet.create({
 });
 
 const NewDeckScreen: FC<Props> = ({ navigation }) => {
+
+  const { listDecks } = useCardsContext();
+
   const goBack = () => {
     navigation.goBack();
   };
@@ -117,15 +121,23 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
             <Ionicons name="arrow-back" size={42} color={COLORS.white} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.saveBtn} onPress={goBack}>
+        <TouchableOpacity style={styles.saveBtn} onPress={listDecks}>
           <View>
-            <Text style={{ fontSize: responsiveFontSize(2), color: COLORS.white, fontFamily: 'Rubik' }}>Save</Text>
+            <Text
+              style={{
+                fontSize: responsiveFontSize(2),
+                color: COLORS.white,
+                fontFamily: "Rubik",
+              }}
+            >
+              Save
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
       <View style={styles.formWrapper}>
         <ScrollView style={{ flexGrow: 1 }}>
-          <View style={{...styles.section, maxHeight: STYLING.height * 0.17}}>
+          <View style={{ ...styles.section, maxHeight: STYLING.height * 0.17 }}>
             <Text style={styles.title}>Deck Name</Text>
             <TextInput
               style={styles.input}
@@ -134,7 +146,7 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
             />
           </View>
 
-          <View style={{...styles.section, maxHeight: STYLING.height * 0.17}}>
+          <View style={{ ...styles.section, maxHeight: STYLING.height * 0.17 }}>
             <Text style={styles.title}>Description</Text>
             <TextInput
               style={styles.input}
@@ -143,22 +155,21 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
             />
           </View>
 
-          <View style={{...styles.section, maxHeight: STYLING.height * 0.45}}>
+          <View style={{ ...styles.section, maxHeight: STYLING.height * 0.45 }}>
             <Text style={styles.title}>Question 1</Text>
             <TextInput
               style={styles.qaInput}
               placeholder="Question"
-            //   maxLength={30}
+              //   maxLength={30}
               multiline
             />
             <TextInput
               style={styles.qaInput}
               placeholder="Answer"
-            //   maxLength={30}
+              //   maxLength={30}
               multiline
             />
           </View>
-          
         </ScrollView>
       </View>
     </View>
