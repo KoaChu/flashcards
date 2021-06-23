@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Platform } from "react-native";
 import Realm, { ObjectSchema } from "realm";
-const { UUID } = Realm.BSON;
+const { UUID, ObjectId } = Realm.BSON;
 let realm: any;
 
 import { CardsContextState, Card, Deck } from "../types/types";
@@ -129,6 +129,7 @@ const contextDefaultValues: CardsContextState = {
   ],
   addCard: () => {},
   removeCard: () => {},
+  listDecks: () => {},
 };
 
 export const CardsContext =
@@ -137,51 +138,25 @@ export const CardsContext =
 export const useCardsContext = () => useContext(CardsContext);
 
 const CardSchema: ObjectSchema = {
-  name: "CardSchema",
+  name: "Card",
   primaryKey: "_id",
   properties: {
-    _id: "uuid",
+    _id: "objectId",
     question: "string",
     answer: "string",
   },
 };
 
 const DeckSchema: ObjectSchema = {
-  name: "DeckSchema",
+  name: "Deck",
   primaryKey: "_id",
   properties: {
-    _id: "uuid",
+    _id: "objectId",
     title: "string",
     description: "string",
-    cards: "CardSchema[]",
+    cards: "Card[]",
   },
 };
-
-// class CardSchema {
-//   static schema = {
-//     name: "Card",
-//     primaryKey: "_id",
-//     properties: {
-//       _id: "uuid",
-//       question: "string",
-//       answer: "string",
-//     },
-//   };
-// }
-
-// class DeckSchema {
-//   static schema = {
-//     name: "Deck",
-//     primaryKey: "_id",
-//     properties: {
-//       _id: "uuid",
-//       title: "string",
-//       description: "string",
-//       cards: "CardSchema[]",
-//     },
-//   };
-// }
-
 
 const CardsProvider: FC = ({ children }) => {
   const [listName, setListName] = useState<string>(
@@ -196,16 +171,23 @@ const CardsProvider: FC = ({ children }) => {
 
   const openDB = async () => {
     try {
-      realm = Realm.open({
-        path: "deckdb",
+      realm = new Realm({
+        path: "deckdb.realm",
         schema: [DeckSchema, CardSchema],
-      }).then(() => {
-        console.log(realm.path);
       });
     } catch (err) {
       console.error(err);
     }
+    // console.log(realm.path);
   };
+
+  const listDecks = async () => {
+    let decks = await realm.objects('Deck');
+    let deckInfo = decks[0];
+    // let x = new ObjectId();
+
+    console.log(deckInfo);
+  }
 
   useEffect(() => {
     openDB();
@@ -237,6 +219,7 @@ const CardsProvider: FC = ({ children }) => {
         deckList,
         addCard,
         removeCard,
+        listDecks,
       }}
     >
       {children}
