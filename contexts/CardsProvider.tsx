@@ -187,13 +187,28 @@ const CardsProvider: FC = ({ children }) => {
     // let x = new ObjectId();
 
     console.log(deckInfo);
-  }
+  };
+
+  const addDeck = async (deckId: string, title: string, description: string, cards: any[]) => {
+    realm.write(() => {
+      let deck = realm.create(
+        'Deck',
+        'modified',
+        {
+          _id: deckId,
+          title: title,
+          description: description,
+          cards: cards
+        }
+      )
+    });
+  };
 
   useEffect(() => {
     openDB();
 
     return () => {
-      Realm;
+      realm.close();
     };
   }, []);
 
