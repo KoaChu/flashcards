@@ -89,7 +89,7 @@ export default function DeckList() {
     >
       <Animated.FlatList
         data={deckList}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item._id}
         horizontal
         showsHorizontalScrollIndicator={false}
         snapToAlignment="start"
@@ -106,7 +106,7 @@ export default function DeckList() {
           { useNativeDriver: false }
         )}
         renderItem={({ item, index }) => {
-          if (item.key === "left-spacer" || item.key === "right-spacer") {
+          if (item._id === "left-spacer" || item._id === "right-spacer") {
             return (
               <View
                 style={{

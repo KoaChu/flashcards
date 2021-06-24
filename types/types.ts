@@ -1,14 +1,14 @@
 export type Card = {
     question: string;
     answer: string;
-    key: string;
+    _id: any;
 };
 
 export type Deck = {
     title: string;
     description: string;
     cards: Card[];
-    key: string;
+    _id: any;
 };
 
 export type CardsContextState = {
