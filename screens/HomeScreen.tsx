@@ -116,7 +116,7 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
                 alignItems: 'center',
                 justifyContent: 'center',
             }}
-            keyExtractor={item => item.key}
+            keyExtractor={item => item._id}
             renderItem={({ item, index }: { item: Card, index: number } ) => {
                 const rotateY = animatedValue.interpolate({
                     inputRange: [0, 1],
