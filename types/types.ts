@@ -9,6 +9,7 @@ export type Deck = {
     description: string;
     cards: Card[];
     _id: any;
+    _createdAt: Date;
 };
 
 export type CardsContextState = {
@@ -17,6 +18,7 @@ export type CardsContextState = {
     deckList: Deck[];
     addCard: (card: Card) => void;
     removeCard: (card: Card) => void;
+    addDeck: (title: string, description: string, cards: Card[]) => void;
     listDecks: () => void;
 };
 

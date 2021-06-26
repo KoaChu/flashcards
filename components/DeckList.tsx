@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,17 +8,42 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import * as Animatable from "react-native-animatable";
 
+import { Deck } from "../types/types";
 import { useCardsContext } from "../contexts/CardsProvider";
 import { STYLING, COLORS } from "../constants/constants";
 
-const ITEM_SIZE = STYLING.width * 0.85 + STYLING.spacing;
+const CARD_WIDTH = STYLING.width * 0.85
+const ITEM_SIZE = CARD_WIDTH + STYLING.spacing;
 const SPACER_SIZE = STYLING.width - ITEM_SIZE / 2;
 
 export default function DeckList() {
+  const [deckListWithSpacers, setDeckListWithSpacers] = useState<Deck[] | []>([]);
+
   const { deckList } = useCardsContext();
   const scrollX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    setDeckListWithSpacers([
+      {
+        title: "left-spacer",
+        description: "spacer",
+        cards: [],
+        _id: "left-spacer",
+        _createdAt: new Date()
+      },
+      ...deckList,
+      {
+        title: "right-spacer",
+        description: "spacer",
+        cards: [],
+        _id: "right-spacer",
+        _createdAt: new Date()
+      },
+    ])
+  },[deckList]);
 
   const styles = StyleSheet.create({
     card: {
@@ -84,11 +109,11 @@ export default function DeckList() {
         height: STYLING.height,
         backgroundColor: COLORS.black,
         // justifyContent: "center",
-        // alignItems: "center",
+        alignItems: "center",
       }}
     >
       <Animated.FlatList
-        data={deckList}
+        data={deckListWithSpacers}
         keyExtractor={(item) => item._id}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -103,14 +128,14 @@ export default function DeckList() {
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: true }
         )}
         renderItem={({ item, index }) => {
           if (item._id === "left-spacer" || item._id === "right-spacer") {
             return (
               <View
                 style={{
-                  width: STYLING.spacing * 2.25,
+                  width: (STYLING.width - CARD_WIDTH) / 2,
                 }}
               />
             );
@@ -119,7 +144,7 @@ export default function DeckList() {
           const inputRange = [
             (index - 2) * ITEM_SIZE,
             (index - 1) * ITEM_SIZE,
-            index * ITEM_SIZE,
+            (index) * ITEM_SIZE,
           ];
 
           const opacity = scrollX.interpolate({
@@ -136,8 +161,8 @@ export default function DeckList() {
             <Animated.View
               style={{
                 ...styles.card,
-                opacity: opacity,
-                transform: [{ translateY: translateY }],
+                opacity: deckList.length > 1 ? opacity : 1,
+                transform: [{ translateY: deckList.length > 1 ? translateY : 0 }],
               }}
             >
               <View style={styles.trashBtn}>
