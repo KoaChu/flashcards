@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
 });
 
 const NewDeckScreen: FC<Props> = ({ navigation }) => {
-  const { listDecks } = useCardsContext();
+  const { listDecks, addDeck } = useCardsContext();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<Card[] | []>([]);
@@ -208,6 +208,15 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
     ]);
   };
 
+  const saveDeck = async () => {
+    try {
+      addDeck(name, description, questions);
+      navigation.navigate("Decks");
+    } catch (err) {
+      console.error(err);
+    }
+  };  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -216,7 +225,7 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
             <Ionicons name="arrow-back" size={42} color={COLORS.white} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.saveBtn} onPress={listDecks}>
+        <TouchableOpacity style={styles.saveBtn} onPress={saveDeck}>
           <View>
             <Text
               style={{
@@ -246,13 +255,14 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
           />
         </View>
 
-        <View style={{ ...styles.section, maxHeight: STYLING.height * 0.17 }}>
+        <View style={{ ...styles.section, maxHeight: STYLING.height * 0.35 }}>
           <Text style={styles.title}>Description</Text>
           <TextInput
             onChangeText={setDescriptionText}
-            style={styles.input}
-            placeholder="Max 30 characters"
-            maxLength={30}
+            style={{...styles.qaInput, height: '65%'}}
+            placeholder="Description"
+            multiline
+            // maxLength={60}
           />
         </View>
 
