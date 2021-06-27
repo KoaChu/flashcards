@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Animated,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { responsiveFontSize } from "react-native-responsive-dimensions";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
@@ -22,8 +23,26 @@ const SPACER_SIZE = STYLING.width - ITEM_SIZE / 2;
 export default function DeckList() {
   const [deckListWithSpacers, setDeckListWithSpacers] = useState<Deck[] | []>([]);
 
-  const { deckList } = useCardsContext();
+  const { deckList, deleteDeck } = useCardsContext();
   const scrollX = useRef(new Animated.Value(0)).current;
+
+  const removeDeck = (deck: Deck) => {
+    Alert.alert("Delete Deck", "This cannot be undone!", [
+      {
+        text: "Cancel",
+        onPress: () => {
+          return;
+        },
+        style: "cancel",
+      },
+      {
+        text: "DELETE",
+        onPress: () => {
+          deleteDeck(deck);
+        },
+      },
+    ]);
+  }
 
   useEffect(() => {
     setDeckListWithSpacers([
@@ -166,12 +185,12 @@ export default function DeckList() {
               }}
             >
               <View style={styles.trashBtn}>
-                <TouchableOpacity onPress={() => console.log("placeholder")}>
+                <TouchableOpacity onPress={() => removeDeck(item)}>
                   <Ionicons name="md-trash-sharp" size={22} color={"maroon"} />
                 </TouchableOpacity>
               </View>
               <View style={styles.editBtn}>
-                <TouchableOpacity onPress={() => console.log("placeholder")}>
+                <TouchableOpacity onPress={(item) => console.log("placeholder")}>
                   <MaterialIcons name="mode-edit" size={24} color={COLORS.white} />
                 </TouchableOpacity>
               </View>

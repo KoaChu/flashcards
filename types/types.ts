@@ -19,6 +19,7 @@ export type CardsContextState = {
     addCard: (card: Card) => void;
     removeCard: (card: Card) => void;
     addDeck: (title: string, description: string, cards: Card[]) => void;
+    deleteDeck: (deck: Deck) => void;
     listDecks: () => void;
 };
 

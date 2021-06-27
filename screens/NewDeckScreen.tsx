@@ -209,6 +209,20 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
   };
 
   const saveDeck = async () => {
+    if (!name || !description) {
+      Alert.alert('Give your deck a name and description!');
+      return;
+    }
+    if (questions.length < 1) {
+      Alert.alert('Add some cards before saving. You can edit these later!');
+      return;
+    }
+    for (let i = 0; i < questions.length; i++) {
+      if (!questions[i].question || !questions[i].answer) {
+        Alert.alert('Some of your cards are missing information!');
+        return;
+      }
+    }
     try {
       addDeck(name, description, questions);
       navigation.navigate("Decks");
