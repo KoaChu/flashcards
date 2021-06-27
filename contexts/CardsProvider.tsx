@@ -19,6 +19,7 @@ const contextDefaultValues: CardsContextState = {
   addCard: () => {},
   removeCard: () => {},
   addDeck: () => {},
+  deleteDeck: () => {},
   listDecks: () => {},
 };
 
@@ -67,15 +68,19 @@ const CardsProvider: FC = ({ children }) => {
         schema: [DeckSchema, CardSchema],
       });
 
-      let decks = await realm.objects('Deck');
-      let sortedDecks = decks.sorted('_createdAt', true);
+      let decks = await realm.objects("Deck");
+      let sortedDecks = decks.sorted("_createdAt", true);
       setDeckList(sortedDecks);
 
       let initialCards = sortedDecks[0]?.cards;
       setCardList(initialCards);
 
-      console.log(JSON.stringify(decks, null, 2));
+      decks.addListener(() => {
+        let updatedDecks = decks.sorted("_createdAt", true);
+        setDeckList(updatedDecks);
+      });
 
+      // console.log(JSON.stringify(decks, null, 2));
     } catch (err) {
       console.error(err);
     }
@@ -83,7 +88,7 @@ const CardsProvider: FC = ({ children }) => {
   };
 
   const listDecks = async () => {
-    let decks = await realm.objects('Deck');
+    let decks = await realm.objects("Deck");
 
     let deckInfo = decks[0];
     // let x = new ObjectId();
@@ -97,24 +102,30 @@ const CardsProvider: FC = ({ children }) => {
 
     realm.write(() => {
       let deck = realm.create(
-        'Deck',
+        "Deck",
         {
           _id: deckId,
           _createdAt: date,
           title: title,
           description: description,
-          cards: cards
+          cards: cards,
         },
-        'modified',
-      )
+        "modified"
+      );
     });
   };
+
+  const deleteDeck = (deck: Deck) => {
+    realm.write(() => {
+      realm.delete(deck);
+    })
+  }
 
   useEffect(() => {
     openDB();
 
     return () => {
-      let decks = realm.objects('Deck');
+      let decks = realm.objects("Deck");
 
       decks.removeAllListeners();
       realm.close();
@@ -144,6 +155,7 @@ const CardsProvider: FC = ({ children }) => {
         addCard,
         removeCard,
         addDeck,
+        deleteDeck,
         listDecks,
       }}
     >
@@ -153,117 +165,3 @@ const CardsProvider: FC = ({ children }) => {
 };
 
 export default CardsProvider;
-
-
-
-// { question: "Deck Name", answer: "description", _id: "1" },
-//     { question: "Q2", answer: "2", _id: "2" },
-//     { question: "3", answer: "3", _id: "3" },
-//     { question: "4", answer: "4", _id: "4" },
-//     { question: "5", answer: "5", _id: "5" },
-//     { question: "6", answer: "6", _id: "6" },
-//     { question: "1", answer: "1", _id: "7" },
-//     { question: "2", answer: "2", _id: "8" },
-//     { question: "3", answer: "3", _id: "9" },
-//     { question: "4", answer: "4", _id: "10" },
-//     { question: "5", answer: "5", _id: "11" },
-//     { question: "End", answer: "options", _id: "12" },
-
-
-// {
-//   title: "left-spacer",
-//   description: "spacer",
-//   cards: [],
-//   _id: "left-spacer",
-// },
-// {
-//   title: "Deck 1",
-//   description: "First deck!",
-//   _id: "1",
-//   cards: [
-//     { question: "Q2", answer: "2", _id: "2" },
-//     { question: "3", answer: "3", _id: "3" },
-//     { question: "4", answer: "4", _id: "4" },
-//     { question: "5", answer: "5", _id: "5" },
-//     { question: "6", answer: "6", _id: "6" },
-//     { question: "1", answer: "1", _id: "7" },
-//     { question: "2", answer: "2", _id: "8" },
-//     { question: "3", answer: "3", _id: "9" },
-//     { question: "4", answer: "4", _id: "10" },
-//     { question: "5", answer: "5", _id: "11" },
-//   ],
-// },
-// {
-//   title: "Deck 2",
-//   description: "Second deck!",
-//   _id: "2",
-//   cards: [
-//     { question: "Q2", answer: "2", _id: "2" },
-//     { question: "3", answer: "3", _id: "3" },
-//     { question: "4", answer: "4", _id: "4" },
-//     { question: "5", answer: "5", _id: "5" },
-//     { question: "6", answer: "6", _id: "6" },
-//     { question: "1", answer: "1", _id: "7" },
-//     { question: "2", answer: "2", _id: "8" },
-//     { question: "3", answer: "3", _id: "9" },
-//     { question: "4", answer: "4", _id: "10" },
-//     { question: "5", answer: "5", _id: "11" },
-//   ],
-// },
-// {
-//   title: "Deck 3",
-//   description: "Third deck!",
-//   _id: "3",
-//   cards: [
-//     { question: "Q2", answer: "2", _id: "2" },
-//     { question: "3", answer: "3", _id: "3" },
-//     { question: "4", answer: "4", _id: "4" },
-//     { question: "5", answer: "5", _id: "5" },
-//     { question: "6", answer: "6", _id: "6" },
-//     { question: "1", answer: "1", _id: "7" },
-//     { question: "2", answer: "2", _id: "8" },
-//     { question: "3", answer: "3", _id: "9" },
-//     { question: "4", answer: "4", _id: "10" },
-//     { question: "5", answer: "5", _id: "11" },
-//   ],
-// },
-// {
-//   title: "Deck 4",
-//   description: "Fourth deck!",
-//   _id: "4",
-//   cards: [
-//     { question: "Q2", answer: "2", _id: "2" },
-//     { question: "3", answer: "3", _id: "3" },
-//     { question: "4", answer: "4", _id: "4" },
-//     { question: "5", answer: "5", _id: "5" },
-//     { question: "6", answer: "6", _id: "6" },
-//     { question: "1", answer: "1", _id: "7" },
-//     { question: "2", answer: "2", _id: "8" },
-//     { question: "3", answer: "3", _id: "9" },
-//     { question: "4", answer: "4", _id: "10" },
-//     { question: "5", answer: "5", _id: "11" },
-//   ],
-// },
-// {
-//   title: "Deck 5",
-//   description: "Fifth deck!",
-//   _id: "5",
-//   cards: [
-//     { question: "Q2", answer: "2", _id: "2" },
-//     { question: "3", answer: "3", _id: "3" },
-//     { question: "4", answer: "4", _id: "4" },
-//     { question: "5", answer: "5", _id: "5" },
-//     { question: "6", answer: "6", _id: "6" },
-//     { question: "1", answer: "1", _id: "7" },
-//     { question: "2", answer: "2", _id: "8" },
-//     { question: "3", answer: "3", _id: "9" },
-//     { question: "4", answer: "4", _id: "10" },
-//     { question: "5", answer: "5", _id: "11" },
-//   ],
-// },
-// {
-//   title: "spacer",
-//   description: "spacer",
-//   cards: [],
-//   _id: "right-spacer",
-// },
