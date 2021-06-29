@@ -119,6 +119,7 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
     }).start();
     setAnswer(!answer);
   };
+  
 
   return (
     <FlatList
