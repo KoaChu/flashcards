@@ -119,7 +119,7 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
     }).start();
     setAnswer(!answer);
   };
-  
+
 
   return (
     <FlatList
@@ -230,11 +230,12 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
               <View
                 style={{
                   width: STYLING.width * 0.8,
-                  height: STYLING.height * 0.4,
+                  height: STYLING.height * 0.47,
                   transform: [{ translateY: STYLING.spacing * 2 }],
                   justifyContent: "center",
                   alignItems: "center",
                   padding: STYLING.spacing,
+                  // overflow: 'scroll',
                   // backgroundColor: 'red',
                 }}
               >
