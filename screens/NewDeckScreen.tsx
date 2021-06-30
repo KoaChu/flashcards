@@ -169,24 +169,24 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
   };
 
   const setNameText = (text: string) => {
-    setName(text);
+    setName(text.replace(/\s+/g, ' ').trim());
   };
 
   const setDescriptionText = (text: string) => {
-    setDescription(text);
+    setDescription(text.replace(/\s+/g, ' ').trim());
   };
 
   const changeQuestionText = (text: string, index: number) => {
     let tempArr = [...questions];
 
-    tempArr[index].question = text;
+    tempArr[index].question = text.replace(/\s+/g, ' ').trim();
     setQuestions(tempArr);
   };
 
   const changeAnswerText = (text: string, index: number) => {
     let tempArr = [...questions];
 
-    tempArr[index].answer = text;
+    tempArr[index].answer = text.replace(/\s+/g, ' ').trim();
     setQuestions(tempArr);
   };
 
@@ -296,14 +296,14 @@ const NewDeckScreen: FC<Props> = ({ navigation }) => {
                 onChangeText={(text: string) => changeQuestionText(text, index)}
                 style={styles.qaInput}
                 placeholder="Question"
-                //   maxLength={30}
+                maxLength={255}
                 multiline
               />
               <TextInput
                 onChangeText={(text: string) => changeAnswerText(text, index)}
                 style={styles.qaInput}
                 placeholder="Answer"
-                //   maxLength={30}
+                maxLength={255}
                 multiline
               />
             </View>

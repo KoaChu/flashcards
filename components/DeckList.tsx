@@ -45,6 +45,7 @@ export default function DeckList() {
   }
 
   useEffect(() => {
+    // console.log('Set decklist in decklist -> ', deckList);
     setDeckListWithSpacers([
       {
         title: "left-spacer",
