@@ -38,6 +38,7 @@ const CardSchema: ObjectSchema = {
   },
 };
 
+
 const DeckSchema: ObjectSchema = {
   name: "Deck",
   primaryKey: "_id",
