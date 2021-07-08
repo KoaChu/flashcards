@@ -88,6 +88,10 @@ const CardsProvider: FC = ({ children }) => {
     // console.log(realm.path);
   };
 
+  const updateDeckList = async () => {
+    return;
+  }
+
   const listDecks = async () => {
     let decks = await realm.objects("Deck");
 
