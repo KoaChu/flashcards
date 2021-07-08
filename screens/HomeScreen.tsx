@@ -182,7 +182,7 @@ const CardList: FC<ListProps> = ({ data }: ListProps): ReactElement => {
           </View>
         );
       }}
-      keyExtractor={(item) => item._id}
+      keyExtractor={(item) => item._id.toString()}
       renderItem={({ item, index }: { item: Card; index: number }) => {
         const rotateY = animatedValue.interpolate({
           inputRange: [0, 1],

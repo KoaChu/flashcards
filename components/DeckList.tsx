@@ -16,12 +16,15 @@ import { Deck } from "../types/types";
 import { useCardsContext } from "../contexts/CardsProvider";
 import { STYLING, COLORS } from "../constants/constants";
 
-const CARD_WIDTH = STYLING.width * 0.85
+const CARD_WIDTH = STYLING.width * 0.85;
 const ITEM_SIZE = CARD_WIDTH + STYLING.spacing;
 const SPACER_SIZE = STYLING.width - ITEM_SIZE / 2;
 
 export default function DeckList() {
-  const [deckListWithSpacers, setDeckListWithSpacers] = useState<Deck[] | []>([]);
+  const [deckListWithSpacers, setDeckListWithSpacers] = useState<Deck[] | []>(
+    []
+  );
+  const [loading, setLoading] = useState(false);
 
   const { deckList, deleteDeck } = useCardsContext();
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -38,11 +41,12 @@ export default function DeckList() {
       {
         text: "DELETE",
         onPress: () => {
+          setLoading(true);
           deleteDeck(deck);
         },
       },
     ]);
-  }
+  };
 
   useEffect(() => {
     // console.log('Set decklist in decklist -> ', deckList);
@@ -52,7 +56,7 @@ export default function DeckList() {
         description: "spacer",
         cards: [],
         _id: "left-spacer",
-        _createdAt: new Date()
+        _createdAt: new Date(),
       },
       ...deckList,
       {
@@ -60,10 +64,11 @@ export default function DeckList() {
         description: "spacer",
         cards: [],
         _id: "right-spacer",
-        _createdAt: new Date()
+        _createdAt: new Date(),
       },
-    ])
-  },[deckList]);
+    ]);
+    setLoading(false);
+  }, [deckList]);
 
   const styles = StyleSheet.create({
     card: {
@@ -103,8 +108,8 @@ export default function DeckList() {
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 2,
-      borderColor: 'maroon',
-      backgroundColor: 'transparent',
+      borderColor: "maroon",
+      backgroundColor: "transparent",
     },
     editBtn: {
       width: STYLING.width * 0.09,
@@ -112,7 +117,7 @@ export default function DeckList() {
       borderRadius: (STYLING.width * 0.09) / 2,
       position: "absolute",
       zIndex: 999,
-      top: (STYLING.spacing * 3) + (STYLING.width * 0.09),
+      top: STYLING.spacing * 3 + STYLING.width * 0.09,
       right: STYLING.spacing * 2.25,
       justifyContent: "center",
       alignItems: "center",
@@ -132,74 +137,90 @@ export default function DeckList() {
         alignItems: "center",
       }}
     >
-      <Animated.FlatList
-        data={deckListWithSpacers}
-        keyExtractor={(item) => item._id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToAlignment="start"
-        snapToInterval={ITEM_SIZE}
-        decelerationRate={0}
-        scrollEventThrottle={16}
-        bounces={false}
-        contentContainerStyle={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: true }
-        )}
-        renderItem={({ item, index }) => {
-          if (item._id === "left-spacer" || item._id === "right-spacer") {
+      {!loading ? (
+        <Animated.FlatList
+          data={deckListWithSpacers}
+          keyExtractor={(item) => item._id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToAlignment="start"
+          snapToInterval={ITEM_SIZE}
+          decelerationRate={0}
+          scrollEventThrottle={16}
+          bounces={false}
+          contentContainerStyle={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            { useNativeDriver: true }
+          )}
+          renderItem={({ item, index }) => {
+            if (item._id === "left-spacer" || item._id === "right-spacer") {
+              return (
+                <View
+                  style={{
+                    width: (STYLING.width - CARD_WIDTH) / 2,
+                  }}
+                />
+              );
+            }
+
+            const inputRange = [
+              (index - 2) * ITEM_SIZE,
+              (index - 1) * ITEM_SIZE,
+              index * ITEM_SIZE,
+            ];
+
+            const opacity = scrollX.interpolate({
+              inputRange,
+              outputRange: [0.4, 1, 0.4],
+            });
+
+            const translateY = scrollX.interpolate({
+              inputRange,
+              outputRange: [40, 0, 40],
+            });
+
             return (
-              <View
+              <Animated.View
                 style={{
-                  width: (STYLING.width - CARD_WIDTH) / 2,
+                  ...styles.card,
+                  opacity: deckList.length > 1 ? opacity : 1,
+                  transform: [
+                    { translateY: deckList.length > 1 ? translateY : 0 },
+                  ],
                 }}
-              />
+              >
+                <View style={styles.trashBtn}>
+                  <TouchableOpacity onPress={() => removeDeck(item)}>
+                    <Ionicons
+                      name="md-trash-sharp"
+                      size={22}
+                      color={"maroon"}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.editBtn}>
+                  <TouchableOpacity
+                    onPress={(item) => console.log("placeholder")}
+                  >
+                    <MaterialIcons
+                      name="mode-edit"
+                      size={24}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.text}>{item.title}</Text>
+              </Animated.View>
             );
-          }
-
-          const inputRange = [
-            (index - 2) * ITEM_SIZE,
-            (index - 1) * ITEM_SIZE,
-            (index) * ITEM_SIZE,
-          ];
-
-          const opacity = scrollX.interpolate({
-            inputRange,
-            outputRange: [0.4, 1, 0.4],
-          });
-
-          const translateY = scrollX.interpolate({
-            inputRange,
-            outputRange: [40, 0, 40],
-          });
-
-          return (
-            <Animated.View
-              style={{
-                ...styles.card,
-                opacity: deckList.length > 1 ? opacity : 1,
-                transform: [{ translateY: deckList.length > 1 ? translateY : 0 }],
-              }}
-            >
-              <View style={styles.trashBtn}>
-                <TouchableOpacity onPress={() => removeDeck(item)}>
-                  <Ionicons name="md-trash-sharp" size={22} color={"maroon"} />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.editBtn}>
-                <TouchableOpacity onPress={(item) => console.log("placeholder")}>
-                  <MaterialIcons name="mode-edit" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.text}>{item.title}</Text>
-            </Animated.View>
-          );
-        }}
-      />
+          }}
+        />
+      ) : (
+        <Text>LOADING</Text>
+      )}
     </View>
   );
 }
