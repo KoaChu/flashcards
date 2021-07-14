@@ -69,6 +69,7 @@ export default function DeckList() {
     ]);
     setLoading(false);
   }, [deckList]);
+  
 
   const styles = StyleSheet.create({
     card: {
